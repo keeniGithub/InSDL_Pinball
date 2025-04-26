@@ -2,15 +2,25 @@
 #define VAR
 
 #include <iostream>
+#include <disk.hpp>
 
 using namespace std;
 
 #define M_PI 3.14159265358979323846
 
+Uint8 attempt_count = 3;
+
+bool win = false;
+bool quit = false;
+
 bool left_keyup = false;
 bool right_keyup = false;
 
-string path = "Z:/cpp/pinball/image/";
+double left_deg = 15;
+double right_deg = -15;
+
+char letter = disk_letter();
+string path = letter+":/cpp/pinball/";
 string name = "pinball";
 
 double ball_velocity_y = 1;
