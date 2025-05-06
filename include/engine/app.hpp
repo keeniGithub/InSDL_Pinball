@@ -6,6 +6,7 @@
 #include <map>
 #include <functional>
 #include <vector>
+#include <direct.h>
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -43,6 +44,7 @@ class app {
         };
 
         bool renderMode;
+        string error = "";
         
         void createWindow(int width, int height, string name){
             SDL_Init(SDL_INIT_VIDEO);
@@ -51,13 +53,9 @@ class app {
             window.name = name;
 
             if (width < 0 || height < 0)
-            {
-                throw "Размер окна не может быть меньше 0";
-            }
+                error = "Размер окна не может быть меньше 0";
             else if (name.empty())
-            {
-                throw "Окно должно иметь название";
-            }
+                error = "Окно должно иметь название";
 
             Window = SDL_CreateWindow(
                 name.c_str(),
@@ -67,20 +65,26 @@ class app {
             );
         }
 
+        char buffer[1024];
+        char* pathname = getcwd(buffer, 1024);
+
     public:
         SDL_Window *Window;
         SDL_Surface *Surface;
         SDL_Renderer *Render;
         bool quit = false;
         vector<keyBindStruct> keyBindings;
+        vector<keyBindStruct> keyUpBindings;
         vector<mouseBindStruct> mouseBindings;
         vector<mouseMotionBindStruct> mouseMotionBindings;
         colorStruct color;
         windowStruct window;
+        string font = string(buffer) + "\\include\\InSDL\\font.ttf";
 
-        void init(int width, int height, string name, bool render = false) {
+        void init(int width, int height, string name, bool render = false, string fontpath = "") {
             createWindow(width, height, name);
-            
+            if (!fontpath.empty()) font = fontpath;
+
             if (!render) {
                 renderMode = false;
                 Surface = SDL_GetWindowSurface(Window);
@@ -117,11 +121,13 @@ class app {
             SDL_SetWindowIcon(Window, iconSurface);
         }
 
+        void setFont(string fontpath){
+            font = fontpath;
+        }
+
         void change(int width, int height, string name) {
-            if ((width < 0 && width != -1) || (height < 0 && height != -1)) {
-                throw "Размер окна не может быть меньше 0";
-                return;
-            }
+            if ((width < 0 && width != -1) || (height < 0 && height != -1))
+                error = "Размер окна не может быть меньше 0";
         
             window.width = width;
             window.height = height;
@@ -133,9 +139,14 @@ class app {
             }
         }
 
-        template<typename Func>
-        void bindKey(SDL_Scancode key, Func func) {
+        string getError(){
+            return error;
+        }
+
+        template<typename Func, typename FuncUp>
+        void bindKey(SDL_Scancode key, Func func, FuncUp funcup = [](){}) {
             keyBindings.push_back({ key, func });
+            keyUpBindings.push_back({ key, funcup });
         }
 
         template<typename Func>

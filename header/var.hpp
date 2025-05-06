@@ -19,8 +19,7 @@ bool right_keyup = false;
 double left_deg = 15;
 double right_deg = -15;
 
-char letter = disk_letter();
-string path = letter+":/cpp/pinball/";
+string path = disk_path()+"\\";
 string name = "pinball";
 
 double ball_velocity_y = 1;

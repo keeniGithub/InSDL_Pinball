@@ -6,12 +6,13 @@
 
 using namespace std;
 
-char disk_letter() {
+string disk_path() {
     const size_t size = 1024; 
     char buffer[size];
-    
-    char firstLetter = buffer[1024];
-    return firstLetter;
+
+    char* pathname = getcwd(buffer, 1024);
+
+    return pathname;
 }
 
 #endif

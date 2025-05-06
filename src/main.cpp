@@ -30,13 +30,19 @@ int main()
     myapp.setIcon(t_ball);
 
     myapp.bindKey(SDL_SCANCODE_A, [&]() {
-        left_deg = left_keyup ? 15 : -45;
-        left_keyup = !left_keyup;
+        left_deg = -45;
+        left_keyup = true;
+    }, [&]() {
+        left_deg = 15;
+        left_keyup = false;
     });
-
+    
     myapp.bindKey(SDL_SCANCODE_D, [&]() {
-        right_deg = right_keyup ? -15 : 45;
-        right_keyup = !right_keyup;
+        right_deg = 45;
+        right_keyup = true;
+    }, [&]() {
+        right_deg = -15;
+        right_keyup = false;
     });
 
     while (!myapp.quit) {
